@@ -1,58 +1,72 @@
-// var http = require('http');
+var port = 8888;
 
-// http.createServer(function (request, response) {
+var http = require("http");
+var path = require("path");
+var fs = require("fs");
+var checkMimeType = true;
 
-//     // 发送 HTTP 头部 
-//     // HTTP 状态值: 200 : OK
-//     // 内容类型: text/plain
-//     response.writeHead(200, {
-//         'Content-Type': 'text/plain;charset=utf-8'
-//     });
+console.log("Starting web server at 127.0.0.1:" + port);
 
-//     // 发送响应数据 "Hello World"
-//     response.end('Hello World\n安妮咖啡');
-// }).listen(8888);
+http.createServer(function (req, res) {
 
-// // 终端打印如下信息
-// console.log('Server running at http://127.0.0.1:8888/');
+    var now = new Date();
 
+    if (req.url === "/") {
+        filename = "/index.html";
+    } else {
+        filename = req.url;
+    }
+    var ext = path.extname(filename);
+    var localPath = __dirname;
+    var validExtensions = {
+        ".html": "text/html",
+        ".js": "application/javascript",
+        ".css": "text/css",
+        ".txt": "text/plain",
+        ".jpg": "image/jpeg",
+        ".gif": "image/gif",
+        ".png": "image/png",
+        ".woff": "application/font-woff",
+        ".woff2": "application/font-woff2"
+    };
 
-var http = require('http');
-var fs = require('fs');
-var url = require('url');
+    var validMimeType = true;
+    var mimeType = validExtensions[ext];
+    if (checkMimeType) {
+        validMimeType = validExtensions[ext] != undefined;
+    }
 
+    if (validMimeType) {
+        localPath += filename;
+        fs.exists(localPath, function (exists) {
+            if (exists) {
+                console.log("Serving file: " + localPath);
+                getFile(localPath, res, mimeType);
+            } else {
+                console.log("File not found: " + localPath);
+                res.writeHead(404);
+                res.end();
+            }
+        });
 
-// 创建服务器
-http.createServer(function (request, response) {
-    // 解析请求，包括文件名
-    var pathname = url.parse(request.url).pathname;
+    } else {
+        console.log("Invalid file extension detected: " + ext + " (" + filename + ")")
+    }
 
-    // 输出请求的文件名
-    console.log("Request for " + pathname + " received.");
+}).listen(port);
 
-    // 从文件系统中读取请求的文件内容
-    fs.readFile(pathname.substr(1), function (err, data) {
-        if (err) {
-            console.log(err);
-            // HTTP 状态码: 404 : NOT FOUND
-            // Content Type: text/plain
-            response.writeHead(404, {
-                'Content-Type': 'text/html'
-            });
+function getFile(localPath, res, mimeType) {
+    fs.readFile(localPath, function (err, contents) {
+        if (!err) {
+            res.setHeader("Content-Length", contents.length);
+            if (mimeType != undefined) {
+                res.setHeader("Content-Type", mimeType);
+            }
+            res.statusCode = 200;
+            res.end(contents);
         } else {
-            // HTTP 状态码: 200 : OK
-            // Content Type: text/plain
-            response.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
-
-            // 响应文件内容
-            response.write(data.toString());
+            res.writeHead(500);
+            res.end();
         }
-        //  发送响应数据
-        response.end();
     });
-}).listen(8888);
-
-// 控制台会输出以下信息
-console.log('Server running at http://127.0.0.1:8888/');
+}
