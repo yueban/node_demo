@@ -1,4 +1,4 @@
-var port = 8888;
+var port = 80;
 
 var http = require("http");
 var path = require("path");
