@@ -1,9 +1,7 @@
-var port = 80;
+var port = 8080;
 
 var http = require("http");
 var path = require("path");
-var module = require("./module");
-module();
 var fs = require("fs");
 var checkMimeType = true;
 
