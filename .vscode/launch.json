@@ -8,6 +8,15 @@
             "type": "node",
             "request": "launch",
             "name": "node example",
+            "program": "${workspaceFolder}/example/lib/server.js",
+            "args": [
+                "example/conf/config.json"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "node example daemon",
             "program": "${workspaceFolder}/example/lib/daemon.js",
             "args": [
                 "example/lib/server.js",

@@ -70,6 +70,7 @@ function main(argv) {
 function validateFiles(pathnames, callback) {
     (function next(i, length) {
         if (i < length) {
+            console.log(path.resolve(pathnames[i]));
             fs.stat(pathnames[i], (err, stats) => {
                 if (err) {
                     callback(err);
