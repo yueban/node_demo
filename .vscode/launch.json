@@ -22,6 +22,12 @@
                 "example/lib/server.js",
                 "example/conf/config.json"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "node example2",
+            "program": "${workspaceFolder}/example2/index.js"
         }
     ]
 }
