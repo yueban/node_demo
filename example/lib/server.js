@@ -7,9 +7,10 @@ var MIME = {
     '.js': 'application/javascript'
 }
 
-function main(argv) {
-    var config = JSON.parse(fs.readFileSync(argv[0], 'utf-8'));
-    var root = config.root || '.';
+function start() {
+    var configPath = path.join(__dirname, '..', 'conf', 'config.json');
+    var config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    var root = config.root || path.join(__dirname, '..');
     var port = config.port || '80';
     var server;
 
@@ -121,5 +122,4 @@ function parseURL(root, url) {
     }
 }
 
-
-main(process.argv.slice(2));
+exports.start = start;
