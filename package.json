@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ejs": "2.6.1",
     "formidable": "^1.2.1",
     "iconv-lite": "^0.4.23"
   }
