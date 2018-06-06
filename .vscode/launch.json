@@ -28,6 +28,12 @@
             "request": "launch",
             "name": "node example2",
             "program": "${workspaceFolder}/example2/index.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "myblog",
+            "program": "${workspaceFolder}/myblog/index.js"
         }
     ]
 }
