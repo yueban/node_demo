@@ -11,7 +11,17 @@
       }
     ],
     "no-unused-vars": ["error", {
-      "argsIgnorePattern": "next"
+      "argsIgnorePattern": "next|done|err"
+    }],
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": true
     }]
+  },
+  "globals": {
+    "describe": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "after": true,
+    "it": true
   }
 }

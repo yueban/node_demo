@@ -56,41 +56,51 @@ app.use((req, res, next) => {
 });
 
 // 正常请求的日志
-app.use(expressWinston.logger({
-  transports: [
-    new winston.transports.Console({
-      json: true,
-      colorize: true,
-    }),
-    new winston.transports.File({
-      filename: path.join(__dirname, 'logs/success.log'),
-    }),
-  ],
-}));
+// 被 require，则不输出日志
+if (!module.parent) {
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console({
+        json: true,
+        colorize: true,
+      }),
+      new winston.transports.File({
+        filename: path.join(__dirname, 'logs/success.log'),
+      }),
+    ],
+  }));
+}
 
 // 路由
 routes(app);
 
 // 错误日志
-app.use(expressWinston.errorLogger({
-  transports: [
-    new winston.transports.Console({
-      json: true,
-      colorize: true,
-    }),
-    new winston.transports.File({
-      filename: path.join(__dirname, 'logs/error.log'),
-    }),
-  ],
-}));
+// 被 require，则不输出日志
+if (!module.parent) {
+  app.use(expressWinston.errorLogger({
+    transports: [
+      new winston.transports.Console({
+        json: true,
+        colorize: true,
+      }),
+      new winston.transports.File({
+        filename: path.join(__dirname, 'logs/error.log'),
+      }),
+    ],
+  }));
+}
 
 // 错误处理
 app.use((err, req, res, next) => {
-  console.error(err);
   req.flash('error', err.message);
   res.redirect('/posts');
 });
 
-app.listen(config.port, () => {
-  console.log(`${pkg.name} listening on port ${config.port}`);
-});
+if (module.parent) {
+  // 被 require，则导出 app
+  module.exports = app;
+} else {
+  app.listen(config.port, () => {
+    console.log(`${pkg.name} listening on port ${config.port}`);
+  });
+}

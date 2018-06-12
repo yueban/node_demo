@@ -29,7 +29,7 @@ router.post('/', checkNotLogin, (req, res, next) => {
   // 校验参数
   try {
     if (!(name.length >= 1 && name.length <= 10)) {
-      throw new Error('名字请限制在 1-10 个字符');
+      throw new Error('姓名请限制在 1-10 个字符');
     }
     if (['m', 'f', 'x'].indexOf(gender) === -1) {
       throw new Error('性别只能是 m、f 或 x');
@@ -47,7 +47,7 @@ router.post('/', checkNotLogin, (req, res, next) => {
       throw new Error('两次输入密码不一致');
     }
   } catch (error) {
-    fs.unlink(avatarFile.path);
+    fs.unlink(avatarFile.path, (err) => {});
     req.flash('error', error.message);
     return res.redirect('/signup');
   }
@@ -74,7 +74,7 @@ router.post('/', checkNotLogin, (req, res, next) => {
     req.flash('success', '注册成功');
     res.redirect('/posts');
   }).catch((e) => {
-    fs.unlink(avatarFile.path);
+    fs.unlink(avatarFile.path, (err) => {});
     if (e.message.match('duplicate key')) {
       req.flash('error', '用户名已被占用');
       return res.redirect('/signup');

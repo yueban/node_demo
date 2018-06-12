@@ -21,7 +21,9 @@ mongolass.plugin('addCreatedAt', {
   },
 });
 
-mongolass.connect(config.mongodb);
+mongolass.connect(config.mongodb, {
+  useNewUrlParser: true,
+});
 
 // 用户表
 const User = mongolass.model('User', {
