@@ -15,7 +15,9 @@ module.exports = function getApp(app) {
   app.use('/comments', comments);
   app.use((req, res) => {
     if (!res.headersSent) {
-      res.status(404).render('404');
+      res.status(404).render('404.pug', {
+        name: 123,
+      });
     }
   });
 };

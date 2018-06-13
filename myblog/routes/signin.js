@@ -8,7 +8,7 @@ const UserModel = require('../models/users');
 const router = express.Router();
 
 router.get('/', checkNotLogin, (req, res) => {
-  res.render('signin');
+  res.render('signin.pug');
 });
 
 router.post('/', checkNotLogin, (req, res, next) => {

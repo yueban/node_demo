@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
   } = req.query;
 
   PostModel.getPosts(author).then((posts) => {
-    res.render('posts', {
+    res.render('posts.pug', {
       posts,
     });
   }).catch(next);
@@ -55,7 +55,7 @@ router.post('/create', checkLogin, (req, res, next) => {
 });
 
 router.get('/create', checkLogin, (req, res) => {
-  res.render('create');
+  res.render('create.pug');
 });
 
 router.get('/:postId', (req, res, next) => {
@@ -74,7 +74,7 @@ router.get('/:postId', (req, res, next) => {
       throw new Error('该文章不存在');
     }
 
-    res.render('post', {
+    res.render('post.pug', {
       post,
       comments,
     });
@@ -139,7 +139,7 @@ router.get('/:postId/edit', checkLogin, (req, res, next) => {
     if (author.toString() !== post.author._id.toString()) {
       throw new Error('权限不足');
     }
-    res.render('edit', {
+    res.render('edit.pug', {
       post,
     });
   }).catch(next);

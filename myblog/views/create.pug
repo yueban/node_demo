@@ -1,0 +1,18 @@
+include components/header
+
+div.ui.grid
+  div.four.wide.column
+    - var gender = ({m:'男',f:'女',x:'保密'})[user.gender]
+    a.avatar.avatar-link(href='/posts/author='+user._id, data-title=user.name+' | '+gender, data-contnet=user.bio)
+      img.avatar(src='/img/'+user.avatar)
+  div.eight.wide.column
+    form.ui.form.segment(method='post')
+      div.field.required
+        label 标题
+        input(type='text', name='title')
+      div.field.required
+        label 内容
+        textarea(name='content', rows='15')
+      input.ui.button(type='submit', value='发布')
+
+include components/footer
