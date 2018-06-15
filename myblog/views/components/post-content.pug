@@ -2,7 +2,7 @@ div(class='post-content')
   div(class='ui grid')
     div(class='four wide column')
       - var gender=({m:'男', f:'女', x:'保密'})[post.author.gender]
-      a(class='avatar avatar-link' href='/posts?author' + post.author._id, data-title=post.author.name + '|' + gender data-content=post.author.bio)
+      a(class='avatar avatar-link' href='/posts?author=' + post.author._id, data-title=post.author.name + '|' + gender data-content=post.author.bio)
         img(class='avatar' src='/img/'+post.author.avatar)
     div(class='eight wide column')
       div(class='ui segment')
@@ -13,7 +13,7 @@ div(class='post-content')
           span(class='tag') #{post.created_at}
           span(class='tag right')
             span 浏览(#{post.pv || 0})
-            span 留言(#{post.commentsCount || 0})
+            span &nbsp;&nbsp;留言(#{post.commentsCount || 0})
 
             //- 当前登录用户是文章创建者
             if user && post.author._id && user._id.toString() === post.author._id.toString()

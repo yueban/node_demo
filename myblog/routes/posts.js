@@ -6,15 +6,29 @@ const PostModel = require('../models/posts');
 const CommentModel = require('../models/comments');
 
 const router = express.Router();
+const pageSize = 2;
 
 router.get('/', (req, res, next) => {
   const {
     author,
+    page: pageStr = '1',
   } = req.query;
+  const page = Number(pageStr);
 
-  PostModel.getPosts(author).then((posts) => {
+  Promise.all([PostModel.getPosts(author, page, pageSize),
+    PostModel.getPostCount(author),
+  ]).then((result) => {
+    const [posts, count] = result;
+    const pageCount = Math.ceil(count / pageSize);
+    const isFirstPage = page === 1;
+    const isLastPage = page === pageCount;
+
     res.render('posts.pug', {
       posts,
+      page,
+      isFirstPage,
+      isLastPage,
+      pageCount,
     });
   }).catch(next);
 });

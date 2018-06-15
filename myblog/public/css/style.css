@@ -23,6 +23,13 @@ a:hover {
   float: right;
 }
 
+.inactive {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: black;
+}
+
 /* ---------- nav ---------- */
 
 .nav-setting {
@@ -61,4 +68,20 @@ a:hover {
 
 .post-content .tag.right a {
   color: #999;
+}
+
+/* ---------- paging ---------- */
+
+span.paging a {
+  text-decoration: none;
+  padding: .5em 1em;
+  font-weight: bold;
+}
+
+span.paging a.disabled {
+  color: #999;
+}
+
+div.paging {
+  float: right;
 }

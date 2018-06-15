@@ -1,0 +1,20 @@
+//- br
+div.ui.grid
+  div.four.wide.column
+  div.eight.wide.column
+    div.paging
+      if !isFirstPage
+        span.paging
+          a(title='上一页' href='?page='+(page-1)) 上一页
+      //- 循环添加每一页
+      - var n = 1
+      while n <= pageCount
+        span.paging
+          if n === page
+            a.disabled.inactive(title=n href='?page='+n) #{n}
+          else
+            a(title=n href='?page='+n) #{n}
+        - n++
+      if !isLastPage
+        span.paging
+          a(title='下一页' href='?page='+(page+1)) 下一页

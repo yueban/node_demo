@@ -65,8 +65,10 @@ function getPostById(postId) {
 /**
  * 按创建时间降序获取所有用户文章或者某个特定用户的所有文章
  * @param {string} author
+ * @param {int} page 页码
+ * @param {int} pageSize 每页数量
  */
-function getPosts(author) {
+function getPosts(author, page, pageSize) {
   const query = {};
   if (author) {
     query.author = author;
@@ -83,6 +85,8 @@ function getPosts(author) {
     .addCreatedAt()
     .addCommentsCount()
     .contentToHtml()
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
     .exec();
 }
 
@@ -149,6 +153,18 @@ function delPostById(postId) {
       CommentModel.delCommentsByPostId(postId));
 }
 
+/**
+ * 获取作者创建的文章数量
+ * @param {string} author
+ */
+function getPostCount(author) {
+  const query = {};
+  if (author) {
+    query.author = author;
+  }
+  return Post.count(query).exec();
+}
+
 module.exports = {
   create,
   getPostById,
@@ -157,4 +173,5 @@ module.exports = {
   getRawPostById,
   updatePostById,
   delPostById,
+  getPostCount,
 };
