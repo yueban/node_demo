@@ -76,13 +76,20 @@ router.get('/:postId', (req, res, next) => {
   const {
     postId,
   } = req.params;
+  const {
+    page: pageStr = '1',
+  } = req.query;
+  const page = Number(pageStr);
 
   Promise.all([
     PostModel.getPostById(postId), // 获取文章信息
-    CommentModel.getComments(postId), // 获取文章留言
+    CommentModel.getComments(postId, page, pageSize), // 获取文章留言
     PostModel.incPv(postId), // 阅读数+1
   ]).then((result) => {
     const [post, comments] = result;
+    const pageCount = Math.ceil(post.commentsCount / pageSize);
+    const isFirstPage = page === 1;
+    const isLastPage = page === pageCount;
 
     if (!post) {
       throw new Error('该文章不存在');
@@ -91,6 +98,10 @@ router.get('/:postId', (req, res, next) => {
     res.render('post.pug', {
       post,
       comments,
+      page,
+      isFirstPage,
+      isLastPage,
+      pageCount,
     });
   }).catch(next);
 });

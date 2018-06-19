@@ -51,8 +51,10 @@ function delCommentsByPostId(postId) {
 /**
  * 获取一篇文章下所有留言
  * @param {string} postId
+ * @param {int} page 页码
+ * @param {int} pageSize 每页数量
  */
-function getComments(postId) {
+function getComments(postId, page, pageSize) {
   return Comment
     .find({
       postId,
@@ -66,6 +68,8 @@ function getComments(postId) {
     })
     .addCreatedAt()
     .contentToHtml()
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
     .exec();
 }
 
