@@ -3,10 +3,9 @@ include components/header
 each post in posts
   include components/post-content
 
-if pageCount !== 1
-  div.ui.grid
-    div.four.wide.column
-    div.eight.wide.column
-      include components/paging
+div.ui.grid
+  div.four.wide.column
+  div.eight.wide.column
+    include components/paging
 
 include components/footer

@@ -65,13 +65,19 @@ function getPostById(postId) {
 /**
  * 按创建时间降序获取所有用户文章或者某个特定用户的所有文章
  * @param {string} author
+ * @param {string} tag 标签
  * @param {int} page 页码
  * @param {int} pageSize 每页数量
  */
-function getPosts(author, page, pageSize) {
+function getPosts(author, tag, page, pageSize) {
   const query = {};
   if (author) {
     query.author = author;
+  }
+  if (tag) {
+    query.tags = {
+      $in: [tag],
+    };
   }
   return Post
     .find(query)
@@ -156,11 +162,17 @@ function delPostById(postId) {
 /**
  * 获取作者创建的文章数量
  * @param {string} author
+ * @param {string} tag 标签
  */
-function getPostCount(author) {
+function getPostCount(author, tag) {
   const query = {};
   if (author) {
     query.author = author;
+  }
+  if (tag) {
+    query.tags = {
+      $in: [tag],
+    };
   }
   return Post.count(query).exec();
 }

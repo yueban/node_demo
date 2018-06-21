@@ -75,6 +75,9 @@ const Post = mongolass.model('Post', {
     type: 'number',
     default: 0,
   },
+  tags: [{
+    type: 'string',
+  }],
 });
 
 Post.index({

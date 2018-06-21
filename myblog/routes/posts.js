@@ -12,11 +12,12 @@ router.get('/', (req, res, next) => {
   const {
     author,
     page: pageStr = '1',
+    tag,
   } = req.query;
   const page = Number(pageStr);
 
-  Promise.all([PostModel.getPosts(author, page, pageSize),
-    PostModel.getPostCount(author),
+  Promise.all([PostModel.getPosts(author, tag, page, pageSize),
+    PostModel.getPostCount(author, tag),
   ]).then((result) => {
     const [posts, count] = result;
     const pageCount = Math.ceil(count / pageSize);
@@ -40,8 +41,12 @@ router.post('/create', checkLogin, (req, res, next) => {
   const {
     title,
     content,
+    tags: tagsStr,
   } = req.fields;
-
+  let tags = [];
+  if (tagsStr && tagsStr.trim() !== '') {
+    tags = tagsStr.trim().split(',').map(tag => tag.trim()).filter(((value, index, self) => value !== '' && self.indexOf(value) === index));
+  }
   // 校验参数
   try {
     if (!title.length) {
@@ -59,6 +64,7 @@ router.post('/create', checkLogin, (req, res, next) => {
     author,
     title,
     content,
+    tags,
   };
 
   return PostModel.create(post).then((result) => {
@@ -116,8 +122,12 @@ router.post('/:postId/edit', checkLogin, (req, res, next) => {
   const {
     title,
     content,
+    tags: tagsStr,
   } = req.fields;
-
+  let tags = [];
+  if (tagsStr && tagsStr.trim() !== '') {
+    tags = tagsStr.trim().split(',').map(tag => tag.trim()).filter((value, index, self) => value !== '' && self.indexOf(value) === index);
+  }
   // 校验参数
   try {
     if (!title.length) {
@@ -141,6 +151,7 @@ router.post('/:postId/edit', checkLogin, (req, res, next) => {
     PostModel.updatePostById(postId, {
       title,
       content,
+      tags,
     }).then(() => {
       req.flash('success', '编辑文章成功');
       // 跳转到文章详情页

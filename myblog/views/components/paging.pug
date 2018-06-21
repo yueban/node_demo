@@ -1,17 +1,31 @@
-div.paging-wrapper
-  div.paging
-    if !isFirstPage
-      span.paging
-        a(title='上一页' href='?page='+(page-1)) 上一页
-    //- 循环添加每一页
-    - var n = 1
-    while n <= pageCount
-      span.paging
-        if n === page
-          a.disabled.inactive(title=n href='?page='+n) #{n}
-        else
-          a(title=n href='?page='+n) #{n}
-      - n++
-    if !isLastPage
-      span.paging
-        a(title='下一页' href='?page='+(page+1)) 下一页
+if pageCount > 1
+  div.paging-wrapper
+    div.paging
+      if !isFirstPage
+        span.paging
+          a(title='上一页' page=page-1) 上一页
+      //- 循环添加每一页
+      - var n = 1
+      while n <= pageCount
+        span.paging
+          if n === page
+            a.disabled.inactive(title=n) #{n}
+          else
+            a(title=n page=n) #{n}
+        - n++
+      if !isLastPage
+        span.paging
+          a(title='下一页' page=page+1) 下一页
+
+//- fix a href value
+script(type='text/javascript').
+  const uri = new URI(window.location.href);
+  const aTags = $('span.paging a');
+  for(aDom of aTags){
+    const aObj = $(aDom);
+    const page = aObj.attr('page');
+    if(page){
+      const href = '?' + uri.clone().setQuery('page', page).normalizeQuery()._parts.query;
+      aObj.attr('href', href);
+    }
+  }

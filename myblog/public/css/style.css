@@ -55,6 +55,15 @@ a {
 
 /* ---------- post-content ---------- */
 
+div.post-header {
+  overflow: hidden;
+}
+
+.post-title {
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
 .post-content h3 a {
   color: #4fc08d !important;
 }
@@ -72,6 +81,15 @@ a {
 
 .post-content .tag.right a {
   color: #999;
+}
+
+img.tag-item {
+  width: auto;
+  height: 1em;
+}
+
+.tag-item {
+  margin-right: 5px;
 }
 
 /* ---------- paging ---------- */

@@ -13,6 +13,9 @@ div.ui.grid
       div.field.required
         label 内容
         textarea(name='content', rows='15')
+      div.field.required
+        label 标签（用 , 分隔）
+        input(type='text' name='tags')
       input.ui.button(type='submit', value='发布')
 
 include components/footer

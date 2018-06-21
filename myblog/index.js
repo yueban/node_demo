@@ -92,10 +92,12 @@ if (!module.parent) {
 }
 
 // 错误处理
-app.use((err, req, res, next) => {
-  req.flash('error', err.message);
-  res.redirect('/posts');
-});
+if (process.env.NODE_ENV !== 'dev') {
+  app.use((err, req, res, next) => {
+    req.flash('error', err.message);
+    res.redirect('/posts');
+  });
+}
 
 if (module.parent) {
   // 被 require，则导出 app

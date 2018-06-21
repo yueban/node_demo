@@ -6,11 +6,22 @@ div(class='post-content')
         img(class='avatar' src='/img/'+post.author.avatar)
     div(class='eight wide column')
       div(class='ui segment')
-        h3
-          a(href='/posts/'+post._id) #{post.title}
+        //- title & date
+        div.post-header
+          h3.post-title
+            a(href='/posts/'+post._id) #{post.title}
+          span(class='tag right') #{post.created_at.substr(0,10)}
+        //- content
         pre!= post.content
         div
-          span(class='tag') #{post.created_at}
+          //- tags
+          span(class='tag')
+            if post.tags
+              img.tag-item(src='/icon/tag.svg')
+              each tag in post.tags
+                span.tag-item
+                  a(title=tag href='/posts?tag='+tag) #{tag}
+          //- views & comments
           span(class='tag right')
             span 浏览(#{post.pv || 0})
             span &nbsp;&nbsp;留言(#{post.commentsCount || 0})
