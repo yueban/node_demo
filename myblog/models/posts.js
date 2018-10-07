@@ -19,8 +19,8 @@ Post.plugin('contentToHtml', {
 
 // 给 post 添加留言数 commentsCount
 Post.plugin('addCommentsCount', {
-  afterFind: posts => Promise
-    .all(posts.map(post => CommentModel.getCommentsCount(post._id).then((count) => {
+  afterFind: posts =>
+    Promise.all(posts.map(post => CommentModel.getCommentsCount(post._id).then((count) => {
       post.commentsCount = count;
       return post;
     }))),

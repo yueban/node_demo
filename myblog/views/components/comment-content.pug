@@ -1,0 +1,18 @@
+div(class='comment' + (comment.replyId ? ' sub-comment':''))
+  span(class='avatar')
+    img(src='/img/'+comment.author.avatar)
+  div(class='content')
+    a(class='author' href='/posts?author'+comment.author._id) #{comment.author.name}
+    div(class='metadata')
+      span(class='date') #{comment.created_at}
+    div.text
+      if comment.replyComment
+        span 回复&nbsp;
+        a(class='author' href='/posts?author'+comment.replyComment.author._id) #{comment.replyComment.author.name}
+        span :&nbsp;
+      div.text.comment-content!= comment.content
+    div(class='actions')
+      a#reply.reply(onclick='reply(' + JSON.stringify(comment) + ')') 回复
+      - var isCurUser = user && comment.author._id && user._id.toString() === comment.author._id.toString()
+      if isCurUser
+      a(class='reply' href='/comments/'+comment._id+'/remove') 删除

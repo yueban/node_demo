@@ -92,6 +92,16 @@ img.tag-item {
   margin-right: 5px;
 }
 
+/* ---------- comment ---------- */
+
+.sub-comment {
+  margin-left: 2em !important;
+}
+
+.comment-content {
+  display: inline-block;
+}
+
 /* ---------- paging ---------- */
 
 div.paging-wrapper {

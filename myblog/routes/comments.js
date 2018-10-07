@@ -13,6 +13,8 @@ router.post('/', checkLogin, (req, res, next) => {
   const {
     postId,
     content,
+    parentId,
+    replyId,
   } = req.fields;
 
   // 校验参数
@@ -29,6 +31,8 @@ router.post('/', checkLogin, (req, res, next) => {
     author,
     postId,
     content,
+    parentId,
+    replyId,
   };
   return CommentModel.create(comment).then(() => {
     req.flash('success', '留言成功');
@@ -47,7 +51,7 @@ router.get('/:commentId/remove', checkLogin, (req, res, next) => {
     if (!comment) {
       throw new Error('留言不存在');
     }
-    if (author.toString() !== comment.author.toString()) {
+    if (author.toString() !== comment.author._id.toString()) {
       throw new Error('权限不足');
     }
     CommentModel.delCommentById(comment._id).then(() => {

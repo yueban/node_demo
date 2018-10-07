@@ -3,13 +3,6 @@ const {
   Comment,
 } = require('../lib/mongo');
 
-Comment.plugin('contentToHtml', {
-  afterFind: comments => comments.map((comment) => {
-    comment.content = marked(comment.content);
-    return comment;
-  }),
-});
-
 /**
  * 创建一个留言
  * @param {object} comment
@@ -23,9 +16,15 @@ function create(comment) {
  * @param {string} commentId
  */
 function getCommentById(commentId) {
-  return Comment.findOne({
-    _id: commentId,
-  }).exec();
+  return Comment
+    .findOne({
+      _id: commentId,
+    })
+    .populate({
+      path: 'author',
+      model: 'User',
+    })
+    .exec();
 }
 
 /**
@@ -55,10 +54,11 @@ function delCommentsByPostId(postId) {
  * @param {int} pageSize 每页数量
  */
 function getComments(postId, page, pageSize) {
+  const query = {};
+  query.postId = postId;
+  query.parentId = null;
   return Comment
-    .find({
-      postId,
-    })
+    .find(query)
     .populate({
       path: 'author',
       model: 'User',
@@ -66,10 +66,11 @@ function getComments(postId, page, pageSize) {
     .sort({
       _id: 1,
     })
-    .addCreatedAt()
-    .contentToHtml()
     .skip((page - 1) * pageSize)
     .limit(pageSize)
+    .addCreatedAt()
+    .contentToHtml()
+    .addChildComments()
     .exec();
 }
 
@@ -82,6 +83,72 @@ function getCommentsCount(postId) {
     postId,
   }).exec();
 }
+
+/**
+ * 获取一条评论下的所有子评论
+ * @param {string} parentId 父评论 id
+ */
+function getCommentsByParentId(parentId) {
+  return Comment
+    .find({
+      parentId,
+    })
+    .populate({
+      path: 'author',
+      model: 'User',
+    })
+    .sort({
+      _id: 1,
+    })
+    .addCreatedAt()
+    .contentToHtml()
+    .addReplyComment()
+    .exec();
+}
+
+Comment.plugin('contentToHtml', {
+  afterFind: comments => comments.map((comment) => {
+    comment.content = marked(comment.content);
+    return comment;
+  }),
+});
+Comment.plugin('addReplyComment', {
+  afterFind: comments => Promise
+    .all(comments.map((comment) => {
+      if (comment.replyId) {
+        return getCommentById(comment.replyId).then((replyComment) => {
+          comment.replyComment = replyComment;
+          return comment;
+        });
+      }
+      return comment;
+    })),
+  afterFindOne: (comment) => {
+    if (comment && comment.replyId) {
+      return getCommentById(comment.replyId).then((replyComment) => {
+        comment.replyComment = replyComment;
+        return comment;
+      });
+    }
+    return comment;
+  },
+});
+Comment.plugin('addChildComments', {
+  afterFind: comments => Promise
+    .all(comments.map(comment => getCommentsByParentId(comment._id).then((childComments) => {
+      comment.childComments = childComments;
+      return comment;
+    }))),
+  afterFindOne: (comment) => {
+    if (comment) {
+      return getCommentsByParentId(comment._id).then((childComments) => {
+        comment.childComments = childComments;
+        return comment;
+      });
+    }
+    return comment;
+  },
+});
 
 module.exports = {
   create,

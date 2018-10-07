@@ -5,17 +5,7 @@ div(class='ui grid')
       div(class='ui minimal comments')
         h3(class='ui dividing header') 留言
         each comment in comments
-          div(class='comment')
-            span(class='avatar')
-              img(src='/img/'+comment.author.avatar)
-            div(class='content')
-              a(class='author' href='/posts?author'+comment.author._id) #{comment.author.name}
-              div(class='metadata')
-                span(class='date') #{comment.created_at}
-              div(class='text')!= comment.content
-              if user && comment.author._id && user._id.toString() === comment.author._id.toString()
-                div(class='actions')
-                  a(class='reply' href='/comments/'+comment._id+'/remove') 删除
+          include comment-content
         //- paging
         include paging
         if user
@@ -24,3 +14,50 @@ div(class='ui grid')
             div(class='field')
               textarea(name='content')
             input(class='ui icon button' type='submit' value='留言')
+
+div.ui.tiny.modal.scrolling.transition.hidden
+    div.header 回复
+    div.content
+      div.ui.form
+        div.field
+          textarea#content
+        div.field
+    div.actions
+      div.ui.cancel.button 取消
+      div.ui.approve.green.button 回复
+
+script(type='text/javascript').
+  function reply(comment){
+    //填充回复提示
+    var textarea = $('textarea#content');
+    textarea.attr('placeholder', '回复 ' + comment.author.name + ':');
+
+    //显示回复弹窗
+    $('.ui.modal')
+      .modal({
+        onApprove : function(){
+          var data = {};
+          data.author = comment.author._id;
+          data.postId = comment.postId;
+          data.replyId = comment._id;
+          if(comment.parentId){
+            data.parentId = comment.parentId;
+          }else{
+            data.parentId = comment._id;
+          }
+          var content = textarea.val();
+          data.content = content;
+          $.ajax({
+            type: 'POST',
+            url: '/comments',
+            data: data,
+            success: function(data, textStatus, jqXHR){
+              location.reload();
+            }
+          });
+
+          return true;
+        },
+      })
+      .modal('show');
+  }

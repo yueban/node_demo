@@ -6,7 +6,7 @@ const PostModel = require('../models/posts');
 const CommentModel = require('../models/comments');
 
 const router = express.Router();
-const pageSize = 2;
+const pageSize = 10;
 
 router.get('/', (req, res, next) => {
   const {
@@ -101,9 +101,22 @@ router.get('/:postId', (req, res, next) => {
       throw new Error('该文章不存在');
     }
 
+    // 将二级评论结构拍平为一级列表
+    const allComments = [];
+    comments.forEach((comment) => {
+      allComments.push(comment);
+      if (comment.childComments) {
+        comment.childComments.forEach((childComment) => {
+          allComments.push(childComment);
+        });
+      }
+    });
+
+    console.log(allComments);
+
     res.render('post.pug', {
       post,
-      comments,
+      comments: allComments,
       page,
       isFirstPage,
       isLastPage,

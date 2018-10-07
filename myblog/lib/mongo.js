@@ -99,6 +99,14 @@ const Comment = mongolass.model('Comment', {
     type: Mongolass.Types.ObjectId,
     required: true,
   },
+  parentId: {
+    type: Mongolass.Types.ObjectId,
+    required: false,
+  },
+  replyId: {
+    type: Mongolass.Types.ObjectId,
+    required: false,
+  },
 });
 // 通过文章 id 获取该文章下所有留言，按留言创建时间升序
 Comment.index({
